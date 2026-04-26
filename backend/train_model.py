@@ -32,12 +32,14 @@ def load_dataset():
     X = []
     y = []
 
+    # reads the generated CSV dataset and separates inputs from the target risk label
     with open(DATA_PATH, "r") as file:
         reader = csv.DictReader(file)
 
         for row in reader:
             condition = row["skinConditionType"].lower().strip()
 
+            # converts each row into the exact feature order expected by the model
             X.append([
                 CONDITION_MAP[condition],
                 float(row["sleepHours"]),
@@ -60,6 +62,7 @@ def main():
 
     print(f"Rows loaded: {len(X)}")
 
+    # splits the dataset so the model can be trained and tested separately
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
@@ -70,6 +73,7 @@ def main():
 
     print("Training fast Random Forest model...")
 
+    # Random Forest is used because it works well with mixed lifestyle and weather features
     model = RandomForestClassifier(
         n_estimators=5,
         max_depth=5,
@@ -77,15 +81,16 @@ def main():
         n_jobs=1,
     )
 
-    model.fit(X_train, y_train)
+    model.fit(X_train, y_train)  # trains the model using the training data
 
-    y_pred = model.predict(X_test)
+    y_pred = model.predict(X_test)  # tests the model on unseen test data
 
     print("\nTraining complete.")
     print(f"Accuracy: {accuracy_score(y_test, y_pred):.4f}")
     print("\nClassification Report:")
     print(classification_report(y_test, y_pred))
 
+    # saves the trained model and the skin condition encoding map for the Flask API
     joblib.dump(model, MODEL_PATH)
     joblib.dump(CONDITION_MAP, ENCODER_PATH)
 

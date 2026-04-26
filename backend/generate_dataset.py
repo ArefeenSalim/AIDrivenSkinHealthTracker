@@ -6,9 +6,11 @@ NUMBER_OF_ROWS = 15000
 
 SKIN_CONDITIONS = ["acne", "eczema", "psoriasis", "rosacea"]
 
-def generate_random_log():
-    skin_condition = random.choice(SKIN_CONDITIONS)
 
+def generate_random_log():
+    # randomly creates one realistic daily skin health log
+    skin_condition = random.choice(SKIN_CONDITIONS)
+    # returns the generated daily log as a dictionary
     sleep_hours = round(random.uniform(3, 10), 1)
     stress_level = random.randint(1, 5)
     water_intake_litres = round(random.uniform(0.5, 4.0), 1)
@@ -28,7 +30,9 @@ def generate_random_log():
         "humidity": humidity,
     }
 
+
 def calculate_risk_level(log):
+    # calculates Low, Medium or High flare-up risk using rule-based logic
     condition = log["skinConditionType"]
 
     sleep = log["sleepHours"]
@@ -41,16 +45,19 @@ def calculate_risk_level(log):
 
     score = 0
 
+    # symptom severity is one of the strongest indicators
     if symptoms >= 4:
         score += 3
     elif symptoms == 3:
         score += 2
 
+    # higher stress increases flare-up risk
     if stress >= 4:
         score += 2
     elif stress == 3:
         score += 1
 
+    # each skin condition has its own trigger rules
     if condition == "acne":
         if diet <= 2:
             score += 2
@@ -75,14 +82,17 @@ def calculate_risk_level(log):
         if water < 2:
             score += 1
 
+    # final score is converted into a risk label
     if score >= 7:
         return "High"
     elif score >= 4:
         return "Medium"
     else:
         return "Low"
-    
+
+
 def generate_dataset():
+    # creates the full CSV dataset used for ML model training
     columns = [
         "skinConditionType",
         "sleepHours",
@@ -107,6 +117,6 @@ def generate_dataset():
     print(f"Dataset created successfully: {OUTPUT_FILE}")
     print(f"Total rows created: {NUMBER_OF_ROWS}")
 
+
 if __name__ == "__main__":
     generate_dataset()
-
