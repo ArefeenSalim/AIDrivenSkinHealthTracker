@@ -1,5 +1,4 @@
 import joblib
-import pandas as pd
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -10,19 +9,10 @@ CORS(app)
 MODEL_PATH = "flare_risk_model.pkl"
 ENCODER_PATH = "skin_condition_encoder.pkl"
 
-FEATURE_COLUMNS = [
-    "skinConditionType",
-    "sleepHours",
-    "stressLevel",
-    "waterIntakeLitres",
-    "dietQuality",
-    "symptomSeverity",
-    "temperature",
-    "humidity",
-]
-
+print("Loading ML model...")
 model = joblib.load(MODEL_PATH)
-encoder = joblib.load(ENCODER_PATH)
+condition_map = joblib.load(ENCODER_PATH)
+print("ML model loaded successfully.")
 
 
 @app.route("/")
@@ -37,31 +27,39 @@ def predict():
     try:
         data = request.get_json()
 
-        skin_condition = data.get("skinConditionType")
+        skin_condition = data.get("skinConditionType", "").lower().strip()
 
-        if skin_condition not in encoder.classes_:
+        if skin_condition not in condition_map:
             return jsonify({
                 "error": "Invalid skinConditionType",
-                "allowedValues": list(encoder.classes_)
+                "allowedValues": list(condition_map.keys())
             }), 400
 
-        encoded_condition = encoder.transform([skin_condition])[0]
-
-        input_data = pd.DataFrame([{
-            "skinConditionType": encoded_condition,
-            "sleepHours": float(data.get("sleepHours")),
-            "stressLevel": int(data.get("stressLevel")),
-            "waterIntakeLitres": float(data.get("waterIntakeLitres")),
-            "dietQuality": int(data.get("dietQuality")),
-            "symptomSeverity": int(data.get("symptomSeverity")),
-            "temperature": float(data.get("temperature")),
-            "humidity": float(data.get("humidity")),
-        }], columns=FEATURE_COLUMNS)
+        input_data = [[
+            condition_map[skin_condition],
+            float(data.get("sleepHours")),
+            int(data.get("stressLevel")),
+            float(data.get("waterIntakeLitres")),
+            int(data.get("dietQuality")),
+            int(data.get("symptomSeverity")),
+            float(data.get("temperature")),
+            float(data.get("humidity")),
+        ]]
 
         prediction = model.predict(input_data)[0]
+        probabilities = model.predict_proba(input_data)[0]
+
+        probability_dict = {}
+
+        for label, probability in zip(model.classes_, probabilities):
+            probability_dict[label] = round(float(probability), 4)
+
+        confidence = probability_dict[prediction]
 
         return jsonify({
-            "riskLevel": prediction
+            "riskLevel": prediction,
+            "confidence": confidence,
+            "probabilities": probability_dict
         })
 
     except Exception as error:
