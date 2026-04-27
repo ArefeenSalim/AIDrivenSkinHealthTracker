@@ -48,9 +48,15 @@
 ## Machine Learning Logic
 ## - Rule-Based Prediction + AI Logic
 
-## Sythetic Dataset
+## Synthetic Dataset
 ## Real medical datasets involving eczema, acne, psoriasis and rosacea flare-up history are difficult to access because of GDPR restrictions, patient privacy laws, NHS access limitations, ethical approval requirements.
-## Because of this, a ynthetic dataset was created to simulate realistic user behaviour and skin health patterns.
+## Because of this, a synthetic dataset was created to simulate realistic user behaviour and skin health patterns.
+## This allowed:
+## - safe model testing
+## - no privacy risks
+## - faster experimentation
+## - proof of concept validation
+## Future work would replace this with real-world clinical datasets.
 
 
 # Installation 
@@ -78,7 +84,7 @@
 
 ## Step 6: Setup Python Virtual Environment
 ## This project uses a Flask backend for prediction logic.Before running the backend, a Python virtual environment must be created.
-## Step 6.1: Download and install Python 3 from: https://www.python.org/downloads/ , after installation, verify if it works by putting ' python3 --version ' in the VS code terminal. This shoudl return a Python version number.
+## Step 6.1: Download and install Python 3 from: https://www.python.org/downloads/ , after installation, verify if it works by putting ' python3 --version ' in the VS code terminal. This should return a Python version number.
 ## Step 6.2: Create the Virtual Environment
 ## In the terminal run ' cd backend ' to get inside the backend folder. Then run ' python3 -m venv venv ', this creates a local virtual environment called venv
 ## Step 6.3: Activate the Virtual Environment in the terminal 
