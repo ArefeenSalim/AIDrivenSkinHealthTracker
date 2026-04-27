@@ -83,7 +83,7 @@
 ## This installs all required project packages including React Native, Expo, Firebase, React Navigation, react-native-chart-kit, react-native-svg
 
 ## Step 6: Setup Python Virtual Environment
-## This project uses a Flask backend for prediction logic.Before running the backend, a Python virtual environment must be created.
+## This project uses a Flask backend for prediction logic. Before running the backend, a Python virtual environment must be created.
 ## Step 6.1: Download and install Python 3 from: https://www.python.org/downloads/ , after installation, verify if it works by putting ' python3 --version ' in the VS code terminal. This should return a Python version number.
 ## Step 6.2: Create the Virtual Environment
 ## In the terminal run ' cd backend ' to get inside the backend folder. Then run ' python3 -m venv venv ', this creates a local virtual environment called venv
@@ -104,4 +104,4 @@
 ## - npx expo start -c
 
 ## Step 8: Scan the QR Code.
-## note that the device the project is being run and the mobile device that is used for scanning are connected to the same wifi
+## Note that the device the project is being run and the mobile device that is used for scanning are connected to the same wifi
